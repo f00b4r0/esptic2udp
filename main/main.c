@@ -51,7 +51,7 @@ static socklen_t Gai_addrlen;
 static int Gsockfd;
 
 void tic2json_main(FILE * yyin, int optflags, char * buf, size_t size, tic2json_framecb_t cb);
-void wifista_main(void);
+void wifista_start(void);
 
 static int udp_setup(void)
 {
@@ -138,7 +138,7 @@ void app_main(void)
 	esp_vfs_dev_uart_use_driver(CONFIG_ESPTIC_UART_NUM);
 
 	/* start wifi */
-	wifista_main();
+	wifista_start();
 	
 	/* setup UDP client */
 	ESP_ERROR_CHECK(udp_setup());
