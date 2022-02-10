@@ -1,8 +1,8 @@
 //
 //  main.c
-//  app stub for ESP8266/ESP32
+//  app for ESP8266/ESP32
 //
-//  (C) 2021 Thibaut VARENE
+//  (C) 2021-2022 Thibaut VARENE
 //  License: GPLv2 - http://www.gnu.org/licenses/gpl-2.0.html
 //
 
@@ -31,12 +31,12 @@
 #include "lwip/sys.h"
 #include "lwip/netdb.h"
 
-#include "../components/tic2json/src/tic2json.h"
+#include "tic2json.h"
 
 #define XSTR(s) STR(s)
 #define STR(s) #s
 
-#define LED_GPIO	CONFIG_ESPTIC_LED_GPIO_NUM
+#define LED_GPIO	CONFIG_ESPTIC2UDP_LED_GPIO_NUM
 #define UDPBUFSIZE	1432	// avoid fragmentation
 
 #ifdef CONFIG_IDF_TARGET_ESP8266
@@ -45,7 +45,7 @@
  #define LED_GPIO_DIR	GPIO_MODE_INPUT_OUTPUT
 #endif
 
-static const char * TAG = "esptic";
+static const char * TAG = "esptic2udp";
 static struct sockaddr_storage Gai_addr;
 static socklen_t Gai_addrlen;
 static int Gsockfd;
@@ -64,7 +64,7 @@ static int udp_setup(void)
 	hints.ai_socktype = SOCK_DGRAM;
 	hints.ai_protocol = IPPROTO_UDP;
 
-	ret = getaddrinfo(CONFIG_ESPTIC_UDP_HOST, CONFIG_ESPTIC_UDP_PORT, &hints, &result);
+	ret = getaddrinfo(CONFIG_ESPTIC2UDP_UDP_HOST, CONFIG_ESPTIC2UDP_UDP_PORT, &hints, &result);
 	if (ret) {
 		ESP_LOGE(TAG, "getaddrinfo: %d", ret);
 		return ESP_FAIL;
@@ -108,7 +108,7 @@ static void tic_task(void *pvParameter)
 	FILE *yyin;
 	static char buf[UDPBUFSIZE];
 
-	yyin = fopen("/dev/uart/" XSTR(CONFIG_ESPTIC_UART_NUM), "r");
+	yyin = fopen("/dev/uart/" XSTR(CONFIG_ESPTIC2UDP_UART_NUM), "r");
 	if (!yyin) {
 		ESP_LOGE(TAG, "Cannot open UART");
 		abort();
@@ -133,19 +133,19 @@ void app_main(void)
 	BaseType_t ret;
 
 	uart_config_t uart_config = {
-		.baud_rate = CONFIG_ESPTIC_BAUDRATE,
+		.baud_rate = CONFIG_ESPTIC2UDP_BAUDRATE,
 		.data_bits = UART_DATA_7_BITS,
 		.parity    = UART_PARITY_EVEN,
 		.stop_bits = UART_STOP_BITS_1,
 	};
-	ESP_ERROR_CHECK(uart_param_config(CONFIG_ESPTIC_UART_NUM, &uart_config));
+	ESP_ERROR_CHECK(uart_param_config(CONFIG_ESPTIC2UDP_UART_NUM, &uart_config));
 
 	/* Install UART driver for interrupt-driven reads and writes */
-	ESP_ERROR_CHECK(uart_driver_install(CONFIG_ESPTIC_UART_NUM,
+	ESP_ERROR_CHECK(uart_driver_install(CONFIG_ESPTIC2UDP_UART_NUM,
 		UART_FIFO_LEN*2, 0, 0, NULL, 0));
 
 	/* Tell VFS to use UART driver */
-	esp_vfs_dev_uart_use_driver(CONFIG_ESPTIC_UART_NUM);
+	esp_vfs_dev_uart_use_driver(CONFIG_ESPTIC2UDP_UART_NUM);
 
 	/* start wifi */
 	wifista_start();
@@ -154,7 +154,7 @@ void app_main(void)
 	ESP_ERROR_CHECK(udp_setup());
 
 	ESP_ERROR_CHECK(gpio_set_direction(LED_GPIO, LED_GPIO_DIR));
-	gpio_set_level(LED_GPIO, CONFIG_ESPTIC_LED_ACTIVE_STATE);
+	gpio_set_level(LED_GPIO, CONFIG_ESPTIC2UDP_LED_ACTIVE_STATE);
 
 	ret = xTaskCreate(&tic_task, "tic", 8192, NULL, 5, NULL);
 	if (ret != pdPASS) {

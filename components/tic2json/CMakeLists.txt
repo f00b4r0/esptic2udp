@@ -1,5 +1,5 @@
-execute_process(COMMAND make -C  ${CMAKE_CURRENT_LIST_DIR}/src csources)
-idf_component_register(SRC_DIRS "src")
+execute_process(COMMAND make -C  ${CMAKE_CURRENT_LIST_DIR}/tic2json/src csources)
+idf_component_register(SRC_DIRS "tic2json/src" INCLUDE_DIRS "tic2json/src")
 target_compile_options(${COMPONENT_LIB} PRIVATE -DBAREBUILD -DPRINT2BUF)
 
 if(CONFIG_TIC2JSON_TICV01)

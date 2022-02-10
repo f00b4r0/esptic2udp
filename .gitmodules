@@ -1,0 +1,3 @@
+[submodule "components/tic2json/tic2json"]
+	path = components/tic2json/tic2json
+	url = http://vcs.slashdirt.org/git/sw/tic2json.git
