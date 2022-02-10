@@ -1,3 +1,6 @@
 [submodule "components/tic2json/tic2json"]
 	path = components/tic2json/tic2json
 	url = http://vcs.slashdirt.org/git/sw/tic2json.git
+[submodule "components/simple_network"]
+	path = components/simple_network
+	url = http://vcs.slashdirt.org/git/sw/ESP/simple_network.git

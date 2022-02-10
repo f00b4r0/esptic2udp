@@ -34,18 +34,6 @@ config ESPTIC2UDP_LED_ACTIVE_STATE
     default 1 if ESPTIC2UDP_LED_ACTIVE_HIGH
     default 0
 
-config ESPTIC2UDP_WIFI_SSID
-    string "WiFi SSID"
-    default "myssid"
-    help
-        SSID (network name) to connect to.
-
-config ESPTIC2UDP_WIFI_PASSWORD
-    string "WiFi Password"
-    default "mypassword"
-    help
-        WiFi password (WPA2) to use.
-
 config ESPTIC2UDP_UDP_HOST
     string "UDP remote hostname"
     default "myhost"

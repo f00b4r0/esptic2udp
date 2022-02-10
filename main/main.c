@@ -21,8 +21,11 @@
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+
 #include "esp_vfs_dev.h"
 #include "esp_log.h"
+#include "esp_event.h"
+
 #include "driver/uart.h"
 #include "driver/gpio.h"
 
@@ -32,6 +35,8 @@
 #include "lwip/netdb.h"
 
 #include "tic2json.h"
+
+#include "simple_network.h"
 
 #define XSTR(s) STR(s)
 #define STR(s) #s
@@ -51,7 +56,6 @@ static socklen_t Gai_addrlen;
 static int Gsockfd;
 
 void tic2json_main(FILE * yyin, int optflags, char * buf, size_t size, tic2json_framecb_t cb);
-void wifista_start(void);
 
 static int udp_setup(void)
 {
@@ -147,9 +151,10 @@ void app_main(void)
 	/* Tell VFS to use UART driver */
 	esp_vfs_dev_uart_use_driver(CONFIG_ESPTIC2UDP_UART_NUM);
 
-	/* start wifi */
-	wifista_start();
-	
+	ESP_ERROR_CHECK(esp_event_loop_create_default());
+
+	simple_network_start();
+
 	/* setup UDP client */
 	ESP_ERROR_CHECK(udp_setup());
 
