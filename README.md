@@ -12,7 +12,7 @@ Gets TIC data on RX pin, outputs formatted JSON over UDP.
   * GPIO number for LED heartbeat and LED active state
   * WiFi SSID and password
   * Target UDP host and port
-* Under Component config -> tic2json, set TIC version
+* Under Component config -> tic2json, set TIC version and adjust options as needed
 
 ### Build and Flash
 

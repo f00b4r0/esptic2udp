@@ -115,7 +115,17 @@ static void tic_task(void *pvParameter)
 	}
 
 	while (1)
-		tic2json_main(yyin, TIC2JSON_OPT_MASKZEROES|TIC2JSON_OPT_DICTOUT|TIC2JSON_OPT_LONGDATE, buf, UDPBUFSIZE, ticframecb);
+		tic2json_main(yyin, 0
+#ifdef CONFIG_TIC2JSON_MASKZEROES
+			      |TIC2JSON_OPT_MASKZEROES
+#endif
+#ifdef CONFIG_TIC2JSON_DICTOUT
+			      |TIC2JSON_OPT_DICTOUT
+#endif
+#ifdef CONFIG_TIC2JSON_LONGDATE
+			      |TIC2JSON_OPT_LONGDATE
+#endif
+			      , buf, UDPBUFSIZE, ticframecb);
 }
 
 void app_main(void)

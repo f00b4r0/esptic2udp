@@ -9,4 +9,15 @@ menu "tic2json"
         bool "02 (Standard)"
     endchoice
 
+    config TIC2JSON_MASKZEROES
+    bool "Skip datasets with 0-value"
+    default y
+
+    config TIC2JSON_DICTOUT
+    bool "Enable dictionary output"
+    default y
+
+    config TIC2JSON_LONGDATE
+    bool "Enable RFC3339 date format output"
+    
 endmenu
