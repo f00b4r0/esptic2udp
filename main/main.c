@@ -143,8 +143,15 @@ void app_main(void)
 		.data_bits = UART_DATA_7_BITS,
 		.parity    = UART_PARITY_EVEN,
 		.stop_bits = UART_STOP_BITS_1,
+		.flow_ctrl = UART_HW_FLOWCTRL_DISABLE,
 	};
 	ESP_ERROR_CHECK(uart_param_config(CONFIG_ESPTIC2UDP_UART_NUM, &uart_config));
+
+#ifndef CONFIG_IDF_TARGET_ESP8266
+	ESP_ERROR_CHECK(uart_set_pin(CONFIG_ESPTIC2UDP_UART_NUM,
+				     UART_PIN_NO_CHANGE, CONFIG_ESPTIC2UDP_UART_RXD,
+				     UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE));
+#endif
 
 	/* Install UART driver for interrupt-driven reads and writes */
 	ESP_ERROR_CHECK(uart_driver_install(CONFIG_ESPTIC2UDP_UART_NUM,
@@ -152,6 +159,12 @@ void app_main(void)
 
 	/* Tell VFS to use UART driver */
 	esp_vfs_dev_uart_use_driver(CONFIG_ESPTIC2UDP_UART_NUM);
+
+#ifndef CONFIG_IDF_TARGET_ESP8266
+	// on ESP32: disable serial line endings translation which breaks everything
+	esp_vfs_dev_uart_port_set_rx_line_endings(CONFIG_ESPTIC2UDP_UART_NUM, ESP_LINE_ENDINGS_LF);
+	esp_vfs_dev_uart_port_set_tx_line_endings(CONFIG_ESPTIC2UDP_UART_NUM, ESP_LINE_ENDINGS_LF);
+#endif
 
 	ESP_ERROR_CHECK(esp_event_loop_create_default());
 

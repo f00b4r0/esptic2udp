@@ -6,6 +6,12 @@ config ESPTIC2UDP_UART_NUM
     help
         UART peripheral to use for TIC input
 
+if !IDF_TARGET_ESP8266
+config ESPTIC2UDP_UART_RXD
+    int "TIC UART RXD pin"
+    default 5
+endif
+
 choice
     prompt "TIC baudrate"
     default ESPTIC2UDP_B9600
