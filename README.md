@@ -27,8 +27,8 @@ See LICENSE.md for details
 * Under Component config -> esptic2udp, set the following:
   * UART for receiving TIC frames and TIC baudrate
   * GPIO number for LED heartbeat and LED active state
-  * WiFi SSID and password
   * Target UDP host and port
+* Under Component config -> simple_network, configure as needed
 * Under Component config -> tic2json, set TIC version and adjust options as needed
 * Under Component config - > Common ESP-related, it is advised to move the console IO to a different UART than the one used by this app
 
