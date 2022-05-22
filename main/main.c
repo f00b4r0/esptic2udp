@@ -103,8 +103,10 @@ static void ticframecb(char * buf, size_t size, bool valid)
 	if (valid)
 		sendto(Gsockfd, buf, size, 0, (struct sockaddr *)&Gai_addr, Gai_addrlen);
 
+#ifdef CONFIG_ESPTIC2UDP_HAS_LED
 	// blink after each complete frame
 	gpio_set_level(LED_GPIO, !gpio_get_level(LED_GPIO));
+#endif
 }
 
 static void tic_task(void *pvParameter)
@@ -158,8 +160,10 @@ void app_main(void)
 	/* setup UDP client */
 	ESP_ERROR_CHECK(udp_setup());
 
+#ifdef CONFIG_ESPTIC2UDP_HAS_LED
 	ESP_ERROR_CHECK(gpio_set_direction(LED_GPIO, LED_GPIO_DIR));
 	gpio_set_level(LED_GPIO, CONFIG_ESPTIC2UDP_LED_ACTIVE_STATE);
+#endif
 
 	ret = xTaskCreate(&tic_task, "tic", 8192, NULL, 5, NULL);
 	if (ret != pdPASS) {
