@@ -25,6 +25,7 @@
 #include "esp_vfs_dev.h"
 #include "esp_log.h"
 #include "esp_event.h"
+#include "esp_wifi.h"
 
 #include "driver/uart.h"
 #include "driver/gpio.h"
@@ -172,6 +173,8 @@ void app_main(void)
 	ESP_ERROR_CHECK(esp_event_loop_create_default());
 
 	simple_network_start();
+
+	ESP_ERROR_CHECK(esp_wifi_set_ps(WIFI_PS_MAX_MODEM));
 
 	/* setup UDP client */
 	ESP_ERROR_CHECK(udp_setup());
