@@ -186,6 +186,9 @@ void app_main(void)
 	gpio_set_level(LED_GPIO, CONFIG_ESPTIC2UDP_LED_ACTIVE_STATE);
 #endif
 
+	// wait 10s before starting TIC processing - can't use Light Sleep with network active
+	vTaskDelay(pdMS_TO_TICKS(10*1000));
+
 #ifdef CONFIG_ESPTIC2UDP_HAS_ENABLE
 	// enable TIC2UART
 	ESP_ERROR_CHECK(gpio_set_direction(ENABLE_GPIO, ENABLE_GPIO_DIR));
