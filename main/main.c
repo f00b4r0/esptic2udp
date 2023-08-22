@@ -42,7 +42,7 @@
 #define STR(s) #s
 
 #define LED_GPIO	CONFIG_ESPTIC2UDP_LED_GPIO_NUM
-#define UDPBUFSIZE	1432	// avoid fragmentation
+#define UDPBUFSIZE	2048	// presumably large enough for most TICs fully decoded
 
 #ifdef CONFIG_IDF_TARGET_ESP8266
  #define LED_GPIO_DIR	GPIO_MODE_OUTPUT
