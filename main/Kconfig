@@ -48,6 +48,29 @@ if ESPTIC2UDP_HAS_LED
         default 0
 endif
 
+menuconfig ESPTIC2UDP_HAS_ENABLE
+    bool "TIC2UART requires Enable signal"
+    default n
+    help
+        Set to configure TIC2UART EN
+
+if ESPTIC2UDP_HAS_ENABLE
+    config ESPTIC2UDP_ENABLE_GPIO_NUM
+        int "Enable GPIO NUM"
+        default 0
+
+    config ESPTIC2UDP_ENABLE_ACTIVE_LOW
+        bool "Enable active low"
+	default y
+        help
+            Set if Enable is active low, unset otherwise
+
+    config ESPTIC2UDP_ENABLE_ACTIVE_STATE
+        int
+        default 0 if ESPTIC2UDP_ENABLE_ACTIVE_LOW
+        default 1
+endif
+
 config ESPTIC2UDP_UDP_HOST
     string "UDP remote hostname"
     default "myhost"

@@ -43,6 +43,7 @@
 #define STR(s) #s
 
 #define LED_GPIO	CONFIG_ESPTIC2UDP_LED_GPIO_NUM
+#define ENABLE_GPIO	CONFIG_ESPTIC2UDP_ENABLE_GPIO_NUM
 #define UDPBUFSIZE	2048	// presumably large enough for most TICs fully decoded
 
 #ifdef CONFIG_IDF_TARGET_ESP8266
@@ -50,6 +51,7 @@
 #else	/* ESP32 variants */
  #define LED_GPIO_DIR	GPIO_MODE_INPUT_OUTPUT
 #endif
+#define ENABLE_GPIO_DIR	GPIO_MODE_OUTPUT
 
 static const char * TAG = "esptic2udp";
 static struct sockaddr_storage Gai_addr;
@@ -182,6 +184,12 @@ void app_main(void)
 #ifdef CONFIG_ESPTIC2UDP_HAS_LED
 	ESP_ERROR_CHECK(gpio_set_direction(LED_GPIO, LED_GPIO_DIR));
 	gpio_set_level(LED_GPIO, CONFIG_ESPTIC2UDP_LED_ACTIVE_STATE);
+#endif
+
+#ifdef CONFIG_ESPTIC2UDP_HAS_ENABLE
+	// enable TIC2UART
+	ESP_ERROR_CHECK(gpio_set_direction(ENABLE_GPIO, ENABLE_GPIO_DIR));
+	gpio_set_level(ENABLE_GPIO, CONFIG_ESPTIC2UDP_ENABLE_ACTIVE_STATE);
 #endif
 
 	ret = xTaskCreate(&tic_task, "tic", 8192, NULL, 5, NULL);
