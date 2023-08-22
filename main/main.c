@@ -144,6 +144,9 @@ void app_main(void)
 		.parity    = UART_PARITY_EVEN,
 		.stop_bits = UART_STOP_BITS_1,
 		.flow_ctrl = UART_HW_FLOWCTRL_DISABLE,
+#ifndef CONFIG_IDF_TARGET_ESP8266
+		.source_clk = UART_SCLK_XTAL,	// for DFS compatibility on ESP32
+#endif
 	};
 	ESP_ERROR_CHECK(uart_param_config(CONFIG_ESPTIC2UDP_UART_NUM, &uart_config));
 
