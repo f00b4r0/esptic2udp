@@ -2,7 +2,7 @@
 //  main.c
 //  app for ESP8266/ESP32
 //
-//  (C) 2021-2022 Thibaut VARENE
+//  (C) 2021-2023 Thibaut VARENE
 //  License: GPLv2 - http://www.gnu.org/licenses/gpl-2.0.html
 //
 

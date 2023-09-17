@@ -7,7 +7,7 @@ Gets TIC data on RX pin, sends formatted JSON over UDP.
 
 GPLv2-only - http://www.gnu.org/licenses/gpl-2.0.html
 
-Copyright: (C) 2021-2022 Thibaut VARÈNE
+Copyright: (C) 2021-2023 Thibaut VARÈNE
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License version 2,
@@ -26,7 +26,8 @@ See LICENSE.md for details
 
 * Under Component config -> esptic2udp, set the following:
   * UART for receiving TIC frames and TIC baudrate
-  * GPIO number for LED heartbeat and LED active state
+  * Optional GPIO number for LED heartbeat and LED active state
+  * Optional GPIO number for TIC2UART enable and enable active state
   * Target UDP host and port
 * Under Component config -> simple_network, configure as needed
 * Under Component config -> tic2json, set TIC version and adjust options as needed
@@ -44,4 +45,4 @@ Tested working on ESP8266 and ESP32.
 
 ### Connect
 
-Use e.g. [TIC2UART](http://hacks.slashdirt.org/hw/tic2uart/) to connect the TIC output of the meter to the RX pin of your ESP board.
+Use e.g. [TIC2UART](http://hacks.slashdirt.org/hw/tic2uart/) or [TICESP](http://hacks.slashdirt.org/hw/ticesp/) to connect the TIC output of the meter to the RX pin of your ESP board.
