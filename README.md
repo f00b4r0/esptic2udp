@@ -28,7 +28,7 @@ See LICENSE.md for details
   * UART for receiving TIC frames and TIC baudrate
   * Optional GPIO number for LED heartbeat and LED active state
   * Optional GPIO number for TIC2UART enable and enable active state
-  * Target UDP host and port
+  * Target UDP host and port (note: if using a DNS name, if it isn't resolvable when the device starts it will reboot)
 * Under Component config -> simple_network, configure as needed
 * Under Component config -> tic2json, set TIC version and adjust options as needed
 * Under Component config - > Common ESP-related, it is advised to move the console IO to a different UART than the one used by this app
