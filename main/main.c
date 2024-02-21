@@ -176,8 +176,6 @@ void app_main(void)
 
 	simple_network_start();
 
-	ESP_ERROR_CHECK(esp_wifi_set_ps(WIFI_PS_MAX_MODEM));
-
 	/* setup UDP client */
 	ESP_ERROR_CHECK(udp_setup());
 
