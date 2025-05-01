@@ -35,6 +35,8 @@
 #include "lwip/sys.h"
 #include "lwip/netdb.h"
 
+#include "mqtt_client.h"
+
 #include "tic2json.h"
 
 #include "simple_network.h"
@@ -48,18 +50,28 @@
 
 #ifdef CONFIG_IDF_TARGET_ESP8266
  #define LED_GPIO_DIR	GPIO_MODE_OUTPUT
+ #define esp_mqtt_client_enqueue(H, T, B, S, Q, R, store) esp_mqtt_client_publish(H, T, B, S, Q, R)
 #else	/* ESP32 variants */
  #define LED_GPIO_DIR	GPIO_MODE_INPUT_OUTPUT
 #endif
 #define ENABLE_GPIO_DIR	GPIO_MODE_OUTPUT
 
 static const char * TAG = "esptic2udp";
+
+#ifdef CONFIG_ESPTIC2UDP_UDP_ENABLED
 static struct sockaddr_storage Gai_addr;
 static socklen_t Gai_addrlen;
 static int Gsockfd;
+#endif
+
+#ifdef CONFIG_ESPTIC2UDP_MQTT_ENABLED
+static const char tic_topic[] = CONFIG_ESPTIC2UDP_MQTT_TIC_PTOPIC;
+static esp_mqtt_client_handle_t Gmqttclient;
+#endif
 
 void tic2json_main(FILE * yyin, int optflags, char * buf, size_t size, tic2json_framecb_t cb);
 
+#ifdef CONFIG_ESPTIC2UDP_UDP_ENABLED
 static int udp_setup(void)
 {
 	struct addrinfo hints, *result, *rp;
@@ -100,11 +112,18 @@ cleanup:
 	return (ret);
 
 }
+#endif /* #ifdef CONFIG_ESPTIC2UDP_UDP_ENABLED */
 
 static void ticframecb(char * buf, size_t size, bool valid)
 {
-	if (valid)
+	if (valid) {
+#ifdef CONFIG_ESPTIC2UDP_UDP_ENABLED
 		sendto(Gsockfd, buf, size, 0, (struct sockaddr *)&Gai_addr, Gai_addrlen);
+#endif
+#ifdef CONFIG_ESPTIC2UDP_MQTT_ENABLED
+		esp_mqtt_client_enqueue(Gmqttclient, tic_topic, buf, size, 1, 0, false);
+#endif
+	}
 
 #ifdef CONFIG_ESPTIC2UDP_HAS_LED
 	// blink after each complete frame
@@ -136,6 +155,18 @@ static void tic_task(void *pvParameter)
 #endif
 			      , buf, UDPBUFSIZE, ticframecb);
 }
+
+#ifdef CONFIG_ESPTIC2UDP_MQTT_ENABLED
+static esp_err_t mqttclient_start(void)
+{
+	esp_mqtt_client_config_t mqtt_cfg = {0};
+
+	Gmqttclient = esp_mqtt_client_init(&mqtt_cfg);
+	esp_mqtt_client_set_uri(Gmqttclient, CONFIG_ESPTIC2UDP_MQTT_URL);
+	return (esp_mqtt_client_start(Gmqttclient));
+}
+#endif /* CONFIG_ESPTIC2UDP_MQTT_ENABLED */
+
 
 void app_main(void)
 {
@@ -176,8 +207,14 @@ void app_main(void)
 
 	simple_network_start();
 
+#ifdef CONFIG_ESPTIC2UDP_UDP_ENABLED
 	/* setup UDP client */
 	ESP_ERROR_CHECK(udp_setup());
+#endif
+
+#ifdef CONFIG_ESPTIC2UDP_MQTT_ENABLED
+	ESP_ERROR_CHECK(mqttclient_start());
+#endif
 
 #ifdef CONFIG_ESPTIC2UDP_HAS_LED
 	ESP_ERROR_CHECK(gpio_set_direction(LED_GPIO, LED_GPIO_DIR));

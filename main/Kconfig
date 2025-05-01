@@ -71,13 +71,34 @@ if ESPTIC2UDP_HAS_ENABLE
         default 1
 endif
 
+menuconfig ESPTIC2UDP_UDP_ENABLED
+    bool "Enable UDP output"
+
 config ESPTIC2UDP_UDP_HOST
+    depends on ESPTIC2UDP_UDP_ENABLED
     string "UDP remote hostname"
     default "myhost"
 
 config ESPTIC2UDP_UDP_PORT
+    depends on ESPTIC2UDP_UDP_ENABLED
     string "UDP remote port"
     default "8094"
+
+
+menuconfig ESPTIC2UDP_MQTT_ENABLED
+    bool "Enable MQTT output"
+
+config ESPTIC2UDP_MQTT_URL
+    string "Broker URL"
+    depends on ESPTIC2UDP_MQTT_ENABLED
+    default "mqtt://mqtt.eclipse.org"
+    help
+        URL of the MQTT broker to connect to
+
+config ESPTIC2UDP_MQTT_TIC_PTOPIC
+    string "MQTT TIC pub topic"
+    depends on ESPTIC2UDP_MQTT_ENABLED
+    default "tic"
 
 endmenu
 
